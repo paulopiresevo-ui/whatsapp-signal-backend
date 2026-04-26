@@ -1,0 +1,4 @@
+const axios=require('axios');const crypto=require('crypto');
+function hashPhone(p){return crypto.createHash('sha256').update(p.replace(/\D/g,'')).digest('hex')}
+async function sendToCAP(inst,data){const r=await axios.post(`https://graph.facebook.com/v19.0/${inst.pixel_id}/events`,{data:[{event_name:data.event_name,event_time:data.timestamp||Math.floor(Date.now()/1000),action_source:'other',user_data:{ph:[hashPhone(data.phone)]},custom_data:{lead_name:data.push_name||'',ohannel:'whatsapp'}}]},{params:{access_token:inst.access_token},timeout:8000});return r.data}
+module.exports={sendToCAP,hashPhone};
